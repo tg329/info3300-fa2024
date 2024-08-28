@@ -59,46 +59,88 @@
 
       // Let's explore some Javascript types!
       console.log("--- Checking out some types ---")
+    
+      console.log(typeof(Math.PI)); //num
       
+      console.log(typeof(new Object())); //obj
       
-      
-      
-      
+      console.log(typeof(console.log)); //func
+
+      console.log(typeof(undefined)); //undefined
+
+      console.log(typeof(null)); //null is not an object, its j null
+
+      console.log(typeof("lalala"));
+
+    
+
+
       
       // Learn a bit more about Objects
       // console.log("--- Testing [] and {} ---")
 
-      
-      
-      
+      // let list = [1,2,3];
+      // console.log(list);
+      // console.log(typeof(list)); //obj
 
       
+      // let dict = {"a":1, "b":2};
+      // console.log(dict);
+      // console.log(typeof(dict)); //obj
+
+      // list['newKey'] = "I promise this works" //all obj are dictionaries
+      // console.log(list)
+
+
+      
+
       // So what can accept keys?
-      // console.log("--- So what works like a dict? ---");
-      // let differentTypes = [3, "hello", new Object(), [1,2,3], function(x) {}, console];
-      // for (let item of differentTypes) {
-      //   console.log( item, typeof(item) );
-      //   item['test'] = "keyAdded";
-      //   console.log( item['test'] ); 
-      // } 
+      console.log("--- So what works like a dict? ---");
+      let differentTypes = [3, "hello", new Object(), [1,2,3], function(x) {}, console];
+      for (let item of differentTypes) {
+        console.log( item, typeof(item) );
+        item['test'] = "keyAdded";
+        console.log( item['test'] ); 
+      } 
       
       
       // Types can get a bit unexpected in JS
-      // console.log("--- Now exploring type coercion ---")
+      console.log("--- Now exploring type coercion ---")
       
       
       
       // Why does this matter?
       
       
+      console.log(3+"Gao"); //3Gao
+      console.log("1"+2); //12
+      console.log(1+"2"); //12
+      console.log(4+true); //5
+      console.log(false+true); 1
+      console.log("false"+true); //falsetrue
+      console.log([1,2,3]+2); // 1,2,32
+
+      //this is type coercion. convinced changed by force, js when presented
+      //w smth weird, adjust the type, cast it until they agree and perform the operation
       
       
+      let color ="red";
+      console.log(color); //changed undefined into a string
+      document.getElementById("rectangle").setAttribute("fill", color);
+
+
+
       // Comparison weirdness
       // console.log("--- Now trying some comparisons ---")
       
-      
-      
-      
+      console.log((true+1) == "2"); //should be false but true, bc type coercion, looked at string made it a string
+      console.log(0 == "0"); //0
+      //empty array equal to 0, empty array w empty array inside is also 0
+
+      //triple === turns type coercion off
+      console.log((true+1) === "2"); //now its false
+
+      console.log(NaN === NaN); //weirdass edge case that's false
 
       // Shortcircuiting of logical statements
       // console.log("--- Shortcircuiting ---");
