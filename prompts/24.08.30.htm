@@ -47,6 +47,7 @@
     // * Let's talk JSON
     // JSON is used as a way to convey complex data over the web (e.g. getting data from an API elsewhere)
     // Key benefit over something like serialization is that it is standardized and very human-readable
+    //Console errors wont be penalized
 
     let obj = [{"name":"DDWA", "number":3300 },{"name": "Java", "number": 2110},{"name": "Python", "number": 1110}];
     
@@ -68,13 +69,43 @@
     //    We have three different declarations, var, const, and let
     //    Var came earlier, const & let more recently
     //    (only use VAR if you really mean it!)
+    // let fruit ="mango"; //defined within current scope, may disappear if no longer in that scope
+    // var veg ="broccoli"; //just works, doesnt care bout scope; exists forever in js
+    // const legume ="lentil"; //same as let but prevents you from changing it (constant)
+
+    // console.log(fruit); //mango
+    // console.log(veg); //broc
+    // console.log(legume); //leek
+
+    // if (fruit ==="mango"){
+    //   //now inside a scope
+    //   let fruit ="apple"; 
+    //   var veg="leek"; //just accesses and changes it to leek outisde 
+    //   const legume ="longbean";
+
+    //   console.log(fruit);
+    //   console.log(veg);
+    //   console.log(legume);
+
+    // }
     
+    // console.log(fruit);
+    //   console.log(veg); //leek
+    //   console.log(legume); //longbean
+
+    //   //use let instead of var
     
           
     // Let's look at *hoisting* of variables
     
+    // console.log(x);
+    // let x =5;
+    // console.log(x); //must initialize x
     
-    
+    // console.log(y);
+    // var y =5;
+    // console.log(y); //this no error!! undefined, then 5.
+    //hoisting means whole thing browser does is identify strip tags, pastes them all together into script its gonna run. all script tags get stuck together. then script tags shares same scope. secondly, it looks for declaeartions vars and functions, scans through it then hoists that declaration to the top of the file to define it so now ur program nows about vars x before its defined
   
   
   
@@ -83,56 +114,122 @@
     
     // If statements:
     
+    // let y =3;
+    // if (y===3){
+    //   console.log("equals 3");
+    // }
+    // else if (y===5){
+    //   console.log("equals 5");
+    // }
+    // else {
+    //   console.log("else");
+    // }
     
+    // // Functions:
     
-    // Functions:
-    
-  
+    // console.log(favoriteColor()); //HOISTED BEHAVIOR!!!!!!!
+    // function favoriteColor(param1,param2){
+    //   return "red";
+    // }
 
-    
-    
-    
+    // console.log(favoriteColor());
+  
+    // var favoriteNumber = function() {return 8;} //anonymous function creation
+    // console.log(favoriteNumber());
+
+
+    // function display(f){
+    //   //u can use functions as objects
+    //   console.log(f());
+    // }
+    // display(favoriteColor) //func within func, passed like an object
+    // display(favoriteNumber)
+
+    // function addOne(number){
+    //   return function(){return number+1}
+    // }
+    // console.log(addOne(3)() ); 
+
+    // let bestAnimal = function(){ console.log("dog");}
+    // bestAnimal(); //old way for anonymous func
+
+    // let bestAnimal2 = () => {return "cat";} //ANONYMOUS FUNC
+    // bestAnimal2();
+
+    // let addNums = (num1,num2) => {return num1+num2}
+    // console.log(addNums(2,6));
+
+    // let addNums2 = (num1,num2) => num1+num2 //shorthand anonymous
+    // //let addOne = (num) => num+1
+    // let addOnes =(num) => num+1
+    // console.log(addOnes(11));
+
+
+
     // * Brief foray into "destructuring"
     // Javascript can help to destructure objects and arrays during variable assignment
     //  (Credit for some examples goes to https://codeburst.io/es6-destructuring-the-complete-guide-7f842d08b98f -- check this out for lots of other capabilities and examples of destructuring)
     
     
-    // let color = [24, 50, 240];
+    let color = [24, 50, 240];
     // let r = color[0];
     // let g = color[1];
     // let b = color[2];
-    // console.log(r,g,b);
+    let [r,g,b] = color; //can do destructuring to break apart these three diff things
+    console.log(r,g,b);
     
     
-    // let student = {name: "Herb Ertlinger", class: "INFO3300", age:21};
-    // 
-    // function printStudent( student ) {   // It also works when function parameters are declared!
-    //   console.log(student.name, student.class);
-    // }
-    // printStudent(student);
+    
+    let student = {name: "Herb Ertlinger", class: "INFO3300", age:21};
+    
+    function printStudent( student ) {   // It also works when function parameters are declared!
+      console.log(student.name, student.class);
+    }
+    printStudent(student);
+
+        
+    function printStudent( {name: nm, class:cls, age:a} ) {   // It also works when function parameters are declared!
+      console.log(nm, cls);
+    }
+    printStudent(student); //DESTRUCTURING EXAMPLE
+
     
     
-    // let width = 50;
-    // let height = 100;
-    // 
+    let width = 50;
+    let height = 100;
+    
     // let t = width;
     // let width = height;
     // let height = t;
-    // 
-    // console.log(width, height);
+
+    [width, height] = [height, width]; //swapped!
+    
+    console.log(width, height);
 
     
     // * Now a bit of looping
-    // let list = ["red","green","blue","yellow"];
+    let list = ["red","green","blue","yellow"];
+    
+    for (let i=0;i<list.length;i++){
+      console.log(list[i]);
+    }
+    
+    for (let index in list){ //in gives u indices, not the stuff in list
+      console.log(list[index]);
+    }
+    
+    
+    for (let object of list){
+      console.log(object) //dont use in, use of
+    }
+    
+    list.forEach(d =>{
+      console.log(d); //defined anon function, also breaks it apart and gives u tha colors
+    })
     
     
     
-    
-    
-    
-    
-    
-    
+
     
     // Note: the Object class has a bunch of other useful static methods for arrays and dicts
     // One common one we'll use is Object.entries( dict ) that gives you all entries in a dict-like object
