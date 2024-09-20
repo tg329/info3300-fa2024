@@ -1,0 +1,221 @@
+<html></html>
+<head>
+<title>INFO 3300 - September 16</title>
+
+  <link href="https://fonts.googleapis.com/css?family=Lato:400,700|Raleway:400,700" rel="stylesheet">
+  
+  <link rel="stylesheet" type="text/css" href="../css/normalize.css">
+  <link rel="stylesheet" type="text/css" href="../css/skeleton.css">
+  <link rel="stylesheet" type="text/css" href="../css/custom-style.css">
+  <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/styles/default.min.css">
+  <link rel="stylesheet" href="../css/hljs-base16.css">
+  <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/11.2.0/highlight.min.js"></script>
+  
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  
+  <style>
+  
+  .gridlines line {
+    stroke: #bbb;
+  }
+  
+  .gridlines .domain {
+    stroke: none;
+  }
+
+  </style>
+
+</head>
+<body>
+  <div class="container larger">
+  <h3>Notes for September 16</h3>
+  <p>
+    Our dataset is sourced from Gapminder. We'll do a spinoff on one of <a href="https://youtu.be/jbkSRLYSojo">Hans Rosling's famous data presentations</a>.
+  </p>
+  <p>
+    The <a href="https://github.com/d3/d3-fetch/tree/v2.0.0">d3.csv command</a> makes use of the <a href="https://developer.mozilla.org/en-US/docs/Web/API/Fetch_API">Fetch API</a>. To learn more about why we use ".then", check out the documentation on <a href="https://developers.google.com/web/fundamentals/primers/promises">JS Promises</a>.
+  </p>
+
+  <h5>HTML for today:</h5>
+
+
+
+  <svg id="scatterplot" height="400" width="400" style="margin-top:50px" >
+
+  </svg>
+
+
+
+  <!-- This block will be automatically filled with syntax-highlighted code from the script below -->
+  <h5>Code for today:</h5>
+  <pre>
+    <code id="display" class="hljs javascript">
+    </code>
+  </pre>
+
+  <!--- Code for today's class --->
+  <script id="notes">
+  
+    // --- 1
+    //  '../datasets/titanic.json'
+    console.log( '---Top of file---' );
+    // console.log(d3.json('../datasets/titanic.json'));
+
+//     d3.json('../datasets/titanic.json').then( (data) =>{
+//       console.log("titanics promise fulfilled", data)},
+//       (error) => {console.log("error happened", error)}
+
+//       //the data file only exists within this block
+// );
+//  console.log(data);
+
+
+    
+    
+
+    // --- 2
+    // Let's make a plain old scatterplot
+
+    // 0. Find our SVG and get that ready
+    //     We're going to use a new way of padding that makes axes easier
+    const svg = d3.select('svg#scatterplot');
+    const width = svg.attr('width');
+    const height = svg.attr('height');
+    
+    const margins = {top:10, right: 20, bottom:50, left:50};
+    const chartWidth = width - margins.left - margins.right;
+    const chartHeight = height - margins.top - margins.bottom;
+    
+
+    let chartArea = svg.append("g")
+                        .attr("transform", `translate(${margins.left}, ${margins.top})`); 
+    
+    // 1. Import some CSV data
+    //        .then( function(successfulResult), function(errorMessage) )
+    d3.csv('../datasets/gapminder.csv', d3.autoType).then((data)=>{ //dont do this for homework, just do regular path, autotype is for csv 
+
+    
+            
+    // 2. Check for data issues
+    console.log(data);
+    
+    data.forEach((d)=>{
+      if(d['Total Population'] === null){
+        return;
+      }
+      d['life'] = Number(d['Life Expectancy']);
+      d['gdp'] = Number(d['GDP/Person(PPP$)']);
+      d['pop'] = Number(d['Total Population'].replace(/,/g,'')); //regular expression, deletes commas in total pop
+
+    });
+
+    data = data.filter((d)=>{
+      console.log(d)
+      //if true, keep in dataset else filter out
+      return d['gdp'] !=0 && d['life'] != 0;
+    })
+
+    console.log(data);
+    
+    // 3. Let's build some scales
+    const gdpExtent = d3.extent(data, d => d["gdp"]) //will find the min and max of the data's gdp in two eleemnt array
+    const gdpScale = d3.scaleLinear().domain(gdpExtent).range([0,chartWidth]); //hori align
+
+    const lifeExtent = d3.extent(data, d => d["life"])
+    const lifeScale = d3.scaleLinear().domain(lifeExtent).range([chartHeight,0]); //vertical align position 
+
+    const popExtent = d3.extent(data, d => d["pop"])
+    const popScale = d3.scaleLinear().domain(popExtent).range([5,15]); //size of circle radius, area
+    
+    // 4. Start plotting circles and see what happens
+    //position is channel
+
+    let leftGridLines = d3.axisLeft(lifeScale).tickFormat("").tickSize(-chartWidth-10); //give ur scale, need domain and pixel positions for how tall and wide ur axis
+    console.log(leftAxis);
+    svg.append("g")
+       .attr("class", "y gridlines")//space makes 2 diff classes
+       .attr("trasnform",`translate(${margin.left-10},${margin.top})`) // otherwise draws into negative space
+       .call(lleftGridLiness); //will run function on ur chain, no need to define variable
+    
+        
+    let bottomGridLines = d3.axisBottom(gdpScale).tickFormat("").tickSize(-chartHeight-10); //give ur scale, need domain and pixel positions for how tall and wide ur axis
+    svg.append("g")
+       .attr("class", "x gridlines")//space makes 2 diff classes
+       .attr("trasnform",`translate(${margin.left},${margin.top+chartHeight+10})`) // otherwise draws into negative space
+       .call(bottomGridLines); //will run function on ur chain, no need to define variable
+    
+
+    data.forEach(d, i =>{
+      chartArea.append("circle")
+                .attr("r", popScale(d['pop']))
+                .attr("cx", gdpScale(d['gdp']))
+                .attr("cy", lifescale(d['life']))
+                .attr("opacity", 0.8)
+                .attr("index", i)
+                .style("fill", "steelblue")
+    });
+    
+    
+    // ---- 3
+    // 5. Let's add some axes
+    // We're going to use D3's axis tools to do it
+    // for (let i =0; i<10;i++){
+    //   //append grid line, using your scale
+    // }
+    
+    let leftAxis = d3.axisLeft(lifeScale); //give ur scale, need domain and pixel positions for how tall and wide ur axis
+    console.log(leftAxis);
+    svg.append("g")
+       .attr("class", "y axis")//space makes 2 diff classes
+       .attr("trasnform",`translate(${margin.left-10},${margin.top})`) // otherwise draws into negative space
+       .call(leftAxis); //will run function on ur chain, no need to define variable
+    
+        
+    let bottomAxis = d3.axisBottom(gdpScale).tick(6); //give ur scale, need domain and pixel positions for how tall and wide ur axis
+    svg.append("g")
+       .attr("class", "x axis")//space makes 2 diff classes
+       .attr("trasnform",`translate(${margin.left},${margin.top+chartHeight+10})`) // otherwise draws into negative space
+       .call(bottomAxis); //will run function on ur chain, no need to define variable
+
+
+    // 5A. We can manually make some gridlines
+    //  It would work fine for HW4, but I don't recommend it once you start using axis labels
+    
+    
+    
+
+    // 5B. Or we can use axes in a clever way
+        
+    
+    
+    
+    // Next up: filtering, legends, and advanced formatting
+    
+    
+
+  
+
+  })
+  </script>
+
+  
+
+  <!--- calls the highlight library to fill the <pre> tag with code --->
+  <script>
+  
+  function sanitize(s) {
+    return s.replace("<br>", "\\n")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#039;");
+          }
+    document.getElementById("display").innerHTML = sanitize( document.getElementById("notes").innerText);
+    hljs.highlightAll();
+  </script>
+
+
+  </div>
+</body>
+</html>
